@@ -1,1 +1,1 @@
-# foats-child-theme
+# floats-child-theme
