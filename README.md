@@ -1,0 +1,1 @@
+# foats-child-theme
