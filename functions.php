@@ -78,6 +78,26 @@ class FLOAT_Functions {
 			//save the new post
 			$pid = wp_insert_post( $new_post );
 			update_post_meta( $pid, 'application_info', $application );
+			$application_location = get_edit_post_link($pid);
+			$headers = array(
+				'Content-Type: text/html; charset=UTF-8',
+//				'From: me <jordyn.tacoronte@fansided.com>',
+				'Cc: lee lee <jordyntacoronte@gmail.com>',//cc the director
+			);
+			wp_mail(
+				'jordyn.tacoronte@fansided.com',//send to the manager of site specific applications
+				'New Application submitted',//the subject
+				'<p>There has been a new application submitted for ' . $_POST['site_applying_for'] .
+				 ' To review the application click on the link below</p>
+ 				<a href="' . $application_location . '"> View Application</a>',//the message
+				$headers //stipulations of email
+			);
+			wp_mail(
+				sanitize_email( $_POST['email']),
+				'Thank you for Submitting your Application',
+				'We will be actively reviewing your application and will respond to you as soon as we can',
+				$headers
+				);
 			wp_safe_redirect( home_url() ); exit;
 		}
 	}
