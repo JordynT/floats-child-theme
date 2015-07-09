@@ -47,29 +47,29 @@ class FLOAT_Functions {
 				$title .= $_POST['first_name'];
 			}
 			$application = array(
-				'first-name'        => $_POST['first_name'],
-				'last-name'         => $_POST['last_name'],
-				'email'             => $_POST['email'],
+				'first-name'        => sanitize_text_field( $_POST['first_name'] ),
+				'last-name'         => sanitize_text_field( $_POST['last_name'] ),
+				'email'             => sanitize_email( $_POST['email'] ),
 				'site-applying-for' => $_POST['site_applying_for'],
 				//bday here
-				'street-address'    => $_POST['street'],
-				'address-2'         => $_POST['address_2'],
-				'city'              => $_POST['city'],
-				'zip'               => $_POST['zip'],
-				'state'             => $_POST['state'],
+				'street-address'    => sanitize_text_field( $_POST['street'] ),
+				'address-2'         => sanitize_text_field( $_POST['address_2'] ),
+				'city'              => sanitize_text_field( $_POST['city'] ),
+				'zip'               => sanitize_text_field( $_POST['zip'] ),
+				'state'             => sanitize_text_field( $_POST['state'] ),
 				'country-of-origin' => $_POST['country_origin'],
-				'referral'          => $_POST['referral'],
-				'posts-per-month'   => $_POST['posts'],
-				'experience'        => $_POST['experience'],
-				'website'           => $_POST['site'],
-				'twitter'           => $_POST['twitter'],
-				'interests'         => $_POST['interest'],
-				'why-work-for-fs'   => $_POST['why_work'],
-				'qualities'         => $_POST['qualities'],
-				'work-sample'       => $_POST['sample'],
+				'referral'          => sanitize_text_field( $_POST['referral'] ),
+				'posts-per-month'   => sanitize_text_field( $_POST['posts'] ),
+				'experience'        => sanitize_text_field( $_POST['experience'] ),
+				'website'           => esc_url_raw( $_POST['site'] ),
+				'twitter'           => sanitize_text_field( $_POST['twitter'] ),
+				'interests'         => sanitize_text_field( $_POST['interest'] ),
+				'why-work-for-fs'   => sanitize_text_field( $_POST['why_work'] ),
+				'qualities'         => sanitize_text_field( $_POST['qualities'] ),
+				'work-sample'       => sanitize_text_field( $_POST['sample'] ),
 			);
 			$new_post = array(
-				'post_title'  => $title,
+				'post_title'  => sanitize_title( $title ),
 				'post_status' => 'publish',           // Choose: publish, preview, future, draft, etc.
 				'post_type'   => FLOAT_Application_cpt::$cpt_name  //'post',page' or use a custom post type if you want to
 			);
