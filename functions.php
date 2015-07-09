@@ -34,6 +34,8 @@ class FLOAT_Functions {
 
 	/*
 	 * saves the form data in a serialized array
+	 *
+	 * @TODO add redirect to thank you page
 	 */
 	static function form_to_post() {
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] && ! empty( $_POST['action'] ) && $_POST['action'] == "new_post" ) {
@@ -76,6 +78,7 @@ class FLOAT_Functions {
 			//save the new post
 			$pid = wp_insert_post( $new_post );
 			update_post_meta( $pid, 'application_info', $application );
+			wp_safe_redirect( home_url() ); exit;
 		}
 	}
 } //end of FLOAT_Functions class

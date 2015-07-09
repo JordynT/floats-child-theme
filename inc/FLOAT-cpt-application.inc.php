@@ -12,7 +12,8 @@ class FLOAT_Application_cpt {
 		$labels = array(
 			'name'          => __( static::$cpt_name . 's' ),
 			'singular_name' => __( static::$cpt_name ),
-			'add_new_item'  => __( 'Add New ' . static::$cpt_name )
+			'add_new_item'  => __( 'Add New ' . static::$cpt_name ),
+			'edit_item'		=> __( 'Edit ' . static::$cpt_name )
 		);
 		$args = array(
 			'labels'               => $labels,
