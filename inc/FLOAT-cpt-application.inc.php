@@ -8,7 +8,9 @@ class FLOAT_Application_cpt {
 		add_action('save_post', array( get_called_class(), 'save_application_mb_status' ) );
 	}
 
-
+	/*
+	 * creates application cpt
+	 */
 	static function create_custom_post_type() {
 		$labels = array(
 			'name'          => __( static::$cpt_name . 's' ),
@@ -64,10 +66,12 @@ class FLOAT_Application_cpt {
 	/*
 	 *
 	 */
-	static function application_status_mb(){
+	static function application_status_mb( $post ) {
 		wp_nonce_field('float_app_status', 'nonce_app_status');
-		$html = '<div><input type="checkbox" name="accepted" value="1" '. (!empty($is_accepted) ? ' checked="checked" ' : null) .' /><label><strong> Accept Application</strong></label></div>';
-		$html .= '<div><input type="checkbox" name="rejected" value="1" '. (!empty($is_rejected) ? ' checked="checked" ' : null) .' /><label><strong> Reject Application</strong></label></div>';
+		$is_accepted = get_post_meta($post->ID, 'application_status', true);
+
+		$html = '<div><input type="radio" name="application_status" value="accept"' . ( !empty( $is_accepted  ) && $is_accepted == "accept" ? ' checked="checked" ' : null ) . ' ><label><strong> Accept</strong></label></div>';
+		$html .= '<div><input type="radio" name="application_status" value="reject"' . ( !empty( $is_accepted ) && $is_accepted == "reject" ? ' checked="checked" ' : null ) . ' ><label><strong> Reject</strong></label></div>';
 		echo $html;
 
 	}
@@ -77,31 +81,20 @@ class FLOAT_Application_cpt {
 	 */
 	static function save_application_mb_status( $post_id ) {
 		if ( self::user_can_save_campaign( $post_id, 'nonce_app_status' ) ) {
-			//Save Data
-//			$my_campaign_options = [
-//				'start-date'      => esc_attr( $_POST['annual-campaign-start-date'] ),
-//				'end-date'        => esc_attr( $_POST['annual-campaign-end-date'] ),
-//				'goal'            => esc_attr( $_POST['annual-campaign-goal'] ),
-//				'is_fully_booked' => esc_attr( $_POST['is_fully_booked'] )
-//			];
-//			update_post_meta( $post_id, 'campaign_options', $my_campaign_options );
-//
-//
-//			update_post_meta( $post_id, 'is_active', esc_attr( $_POST['is_active'] ) );
-//
-//			update_post_meta( $post_id, 'is_pledge_option_active', esc_attr( $_POST['is_pledge_option_active'] ) );
+
+			update_post_meta( $post_id, 'application_status', esc_attr( $_POST['application_status'] ) );
 		}
 	}
 
-	static function user_can_save_campaign($post_id, $nonce){
+	static function user_can_save_campaign( $post_id, $nonce ){
 		//is an autosave?
-		$is_autosave = wp_is_post_autosave($post_id);
+		$is_autosave = wp_is_post_autosave( $post_id );
 		//is revision?
-		$is_revision = wp_is_post_revision($post_id);
+		$is_revision = wp_is_post_revision( $post_id );
 		//is valid nonce?
-		$is_valid_nonce = (isset($_POST[$nonce]) && wp_verify_nonce($_POST[ $nonce ], 'float_app_status'));
+		$is_valid_nonce = ( isset( $_POST[$nonce] ) && wp_verify_nonce( $_POST[ $nonce ], 'float_app_status' ) );
 		//return info
-		return ! ($is_autosave || $is_revision) && $is_valid_nonce;
+		return ! ( $is_autosave || $is_revision ) && $is_valid_nonce;
 	}
 
 
