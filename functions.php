@@ -78,7 +78,7 @@ class FLOAT_Functions {
 			//save the new post
 			$pid = wp_insert_post( $new_post );
 			update_post_meta( $pid, 'application_info', $application );
-			$application_location = get_edit_post_link($pid);
+			$application_location = get_edit_post_link( $pid );
 			$headers = array(
 				'Content-Type: text/html; charset=UTF-8',
 //				'From: me <jordyn.tacoronte@fansided.com>',
@@ -93,12 +93,12 @@ class FLOAT_Functions {
 				$headers //stipulations of email
 			);
 			wp_mail(
-				sanitize_email( $_POST['email']),
+				sanitize_email( $_POST['email'] ),
 				'Thank you for Submitting your Application',
 				'We will be actively reviewing your application and will respond to you as soon as we can',
 				$headers
 				);
-			wp_safe_redirect( home_url() ); exit;
+			wp_safe_redirect( home_url() . '/' . 'thank-you' ); exit;
 		}
 	}
 } //end of FLOAT_Functions class

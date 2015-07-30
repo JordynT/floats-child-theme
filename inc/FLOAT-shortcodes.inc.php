@@ -12,7 +12,7 @@ class FLOAT_Shortcodes{
 		?>
 		<div class="wrap">
 			<h2>
-				Please fill out this online application to be considered for a writing position for Fansided.
+			Please fill out this online application to be considered for a writing position for Fansided.
 			</h2>
 
 			<form method="post" id="new_application" name="new_application" action="">

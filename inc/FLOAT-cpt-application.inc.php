@@ -75,8 +75,13 @@ class FLOAT_Application_cpt {
 
 		if( !empty( $is_accepted  ) && $is_accepted == "reject" ) {
 
-			$html = '<div><input type="radio" name="application_status" value="accept"><label><strong> Accept</strong></label></div>';
-			$html .= '<div><input type="radio" name="application_status" value="reject" checked="checked"><label><strong> Reject</strong></label><a href="' . wp_mail('jordyn.tacoronte@fansided.com', 'The subject', 'sorry, your application is declined') . '" class="button">Send Rejection E-mail</a></div>';
+			$html  = '<div class="application-status">';
+			$html .= '<input type="radio" name="application_status" value="accept"><label><strong> Accept</strong></label>';
+			$html .= '</div>';
+			$html .= '<div class="application-status">';
+			$html .= '<input type="radio" name="application_status" value="reject" checked="checked"><label><strong> Reject</strong></label>';
+			$html .= '<a href="' . wp_mail( 'jordyn.tacoronte@fansided.com', 'The subject', 'sorry, your application is declined' ) . '" class="button reject-button" style="margin-left:10px;" >Send Rejection E-mail</a>';
+			$html .= '</div>';
 
 		} elseif ( !empty( $is_accepted  ) && $is_accepted == "accept" ) {
 
