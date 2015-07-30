@@ -2,10 +2,12 @@
 
 class FLOAT_Application_cpt {
 	public static $cpt_name = 'Application';
+	public static $cpt = 'application';
 
 	function __construct() {
 		add_action( 'init', array( get_called_class(), 'create_custom_post_type' ) );
-		add_action('save_post', array( get_called_class(), 'save_application_mb_status' ) );
+		add_action( 'save_post', array( get_called_class(), 'save_application_mb_status' ) );
+		add_filter( 'redirect_post_location', array( get_called_class() , 'my_redirect_after_save' ) );
 	}
 
 	/*
@@ -38,8 +40,9 @@ class FLOAT_Application_cpt {
 	 *creates the custom metabox for cpt application
 	 */
 	static function create_application_mb() {
+		//TODO fix these boxes to have application info in content section and appl status on side
 		add_meta_box( 'application_info', 'Application Information', array( get_called_class(), 'application_information_mb' ), self::$cpt_name );
-		add_meta_box('application_status', 'Application Status', array( get_called_class(), 'application_status_mb' ), self::$cpt_name, 'side', 'default' );
+		add_meta_box('application_status', 'Application Status', array( get_called_class(), 'application_status_mb' ), self::$cpt_name );
 	}
 
 	/*
@@ -67,11 +70,25 @@ class FLOAT_Application_cpt {
 	 *
 	 */
 	static function application_status_mb( $post ) {
-		wp_nonce_field('float_app_status', 'nonce_app_status');
+		wp_nonce_field( 'float_app_status', 'nonce_app_status' );
 		$is_accepted = get_post_meta($post->ID, 'application_status', true);
 
-		$html = '<div><input type="radio" name="application_status" value="accept"' . ( !empty( $is_accepted  ) && $is_accepted == "accept" ? ' checked="checked" ' : null ) . ' ><label><strong> Accept</strong></label></div>';
-		$html .= '<div><input type="radio" name="application_status" value="reject"' . ( !empty( $is_accepted ) && $is_accepted == "reject" ? ' checked="checked" ' : null ) . ' ><label><strong> Reject</strong></label></div>';
+		if( !empty( $is_accepted  ) && $is_accepted == "reject" ) {
+
+			$html = '<div><input type="radio" name="application_status" value="accept"><label><strong> Accept</strong></label></div>';
+			$html .= '<div><input type="radio" name="application_status" value="reject" checked="checked"><label><strong> Reject</strong></label><a href="' . wp_mail('jordyn.tacoronte@fansided.com', 'The subject', 'sorry, your application is declined') . '" class="button">Send Rejection E-mail</a></div>';
+
+		} elseif ( !empty( $is_accepted  ) && $is_accepted == "accept" ) {
+
+			$html = '<div><input type="radio" name="application_status" value="accept" checked="checked"><label><strong> Accept</strong></label></div>';
+			$html .= '<div><input type="radio" name="application_status" value="reject" ><label><strong> Reject</strong></label><div>';
+
+		} elseif ( empty( $is_accepted ) ){
+
+			$html = '<div><input type="radio" name="application_status" value="accept"><label><strong> Accept</strong></label></div>';
+			$html .= '<div><input type="radio" name="application_status" value="reject"><label><strong> Reject</strong></label><div>';
+		}
+
 		echo $html;
 
 	}
@@ -80,13 +97,12 @@ class FLOAT_Application_cpt {
 	 *@TODO work on saving checkbox field, or making checkbox a dropdown/radio button to only allow one to be clicked
 	 */
 	static function save_application_mb_status( $post_id ) {
-		if ( self::user_can_save_campaign( $post_id, 'nonce_app_status' ) ) {
-
+		if ( self::user_can_save_application( $post_id, 'nonce_app_status' ) ) {
 			update_post_meta( $post_id, 'application_status', esc_attr( $_POST['application_status'] ) );
 		}
 	}
 
-	static function user_can_save_campaign( $post_id, $nonce ){
+	static function user_can_save_application( $post_id, $nonce ){
 		//is an autosave?
 		$is_autosave = wp_is_post_autosave( $post_id );
 		//is revision?
@@ -95,6 +111,22 @@ class FLOAT_Application_cpt {
 		$is_valid_nonce = ( isset( $_POST[$nonce] ) && wp_verify_nonce( $_POST[ $nonce ], 'float_app_status' ) );
 		//return info
 		return ! ( $is_autosave || $is_revision ) && $is_valid_nonce;
+	}
+
+	static function my_redirect_after_save( $location ) {
+		global $post;
+		if (self::$cpt == get_post_type( $post->ID ) ) {
+
+			$is_accepted = get_post_meta( $post->ID, 'application_status', true );
+			//if applicant is accepted, takes application reviewer to sensei learner management to add user
+			//TODO will need to also create user in this function
+			if ( ! empty( $is_accepted ) && $is_accepted == 'accept' ) {
+
+				$location = admin_url( 'admin.php?page=sensei_learners' );
+			}
+
+			return $location;
+		}
 	}
 
 
