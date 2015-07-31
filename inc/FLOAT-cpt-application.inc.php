@@ -73,6 +73,7 @@ class FLOAT_Application_cpt {
 		wp_nonce_field( 'float_app_status', 'nonce_app_status' );
 		$is_accepted = get_post_meta($post->ID, 'application_status', true);
 
+		//if application is rejected, a button is added to send applicant a rejection email
 		if( !empty( $is_accepted  ) && $is_accepted == "reject" ) {
 
 			$html  = '<div class="application-status">';
@@ -126,7 +127,26 @@ class FLOAT_Application_cpt {
 			//if applicant is accepted, takes application reviewer to sensei learner management to add user
 			//TODO will need to also create user in this function
 			if ( ! empty( $is_accepted ) && $is_accepted == 'accept' ) {
+				//get application information to create new user
+				$app_info = get_post_meta( $post->ID, 'application_info', true );
+				$user_email = $app_info['email'];
+				$first_name = $app_info['first-name'];
+				$last_name = $app_info['last-name'];
+				//creates a user name
+				$user_name = substr($first_name, 0, 1) . $last_name;
+				//checks if user name exists
+				$user = username_exists( $user_name );
 
+				//user creation logic
+				if ( $user && email_exists( $user_email ) == false ) {
+					$user_name .= '1';
+					$random_password = 'password';
+					wp_create_user( $user_name, $random_password, $user_email );
+				}elseif ( !$user && email_exists( $user_email ) == false ){
+					$random_password = 'password';
+					wp_create_user( $user_name, $random_password, $user_email );
+				}
+				//redirects applicant's approver to learner management to add new user to chosen course
 				$location = admin_url( 'admin.php?page=sensei_learners' );
 			}
 
