@@ -10,6 +10,7 @@ class FLOAT_Application_cpt {
 		add_filter( 'redirect_post_location', array( get_called_class() , 'redirect_to_course_after_accepting' ) );
 		add_action( 'admin_menu', array( get_called_class(), 'modify_cpt_menu' ) );
 		add_action( 'current_screen', array( get_called_class(), 'redirect_on_add_new_application' ) );
+		add_action( 'admin_head', array( get_called_class(), 'hide_add_new_cpt_button' ) );
 	}
 
 	/*
@@ -182,6 +183,17 @@ class FLOAT_Application_cpt {
 		$current_screen = get_current_screen();
 		if ( $current_screen->id === self::CPT_SLUG && $current_screen->action == 'add' ) {
 			wp_safe_redirect( home_url() . '/wp-admin/' . 'edit.php' . '?post_type=' . self::CPT_SLUG );
+		}
+	}
+
+	/*
+	 * hides the add new button on cpt edit main page
+	 */
+	static function hide_add_new_cpt_button(){
+		if( get_post_type() == self::CPT_SLUG ){
+			echo '<style type="text/css">
+					.add-new-h2 {display:none;}
+				</style>';
 		}
 	}
 
