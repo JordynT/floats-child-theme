@@ -2,13 +2,12 @@
 
 class FLOAT_Application_cpt {
 	public static $cpt_name = 'Application';
-//	public static $cpt = 'application';
 	const CPT_SLUG = 'application';
 
 	function __construct() {
 		add_action( 'init', array( get_called_class(), 'create_custom_post_type' ) );
 		add_action( 'save_post', array( get_called_class(), 'save_application_mb_status' ) );
-		add_filter( 'redirect_post_location', array( get_called_class() , 'my_redirect_after_save' ) );
+		add_filter( 'redirect_post_location', array( get_called_class() , 'redirect_to_course_after_accepting' ) );
 		add_action( 'admin_menu', array( get_called_class(), 'modify_cpt_menu' ) );
 		add_action( 'current_screen', array( get_called_class(), 'redirect_on_add_new_application' ) );
 	}
@@ -111,6 +110,11 @@ class FLOAT_Application_cpt {
 		}
 	}
 
+	/*
+	 * @param $post_id
+	 *
+	 * @param $nonce
+	 */
 	static function user_can_save_application( $post_id, $nonce ){
 		//is an autosave?
 		$is_autosave = wp_is_post_autosave( $post_id );
@@ -122,7 +126,12 @@ class FLOAT_Application_cpt {
 		return ! ( $is_autosave || $is_revision ) && $is_valid_nonce;
 	}
 
-	static function my_redirect_after_save( $location ) {
+	/*
+	 * if reviewer or applicant accepts application, it redirects to course to add new applicant, and creates a new user
+	 *
+	 * @param $location
+	 */
+	static function redirect_to_course_after_accepting( $location ) {
 		global $post;
 		if (self::CPT_SLUG == get_post_type( $post->ID ) ) {
 
@@ -157,6 +166,9 @@ class FLOAT_Application_cpt {
 		}
 	}
 
+	/*
+	 * removes add new application from cpt menu on admin bar
+	 */
 	static function modify_cpt_menu(){
 		global $submenu;
 		//removes the 'add new' submenu tab
