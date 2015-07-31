@@ -157,23 +157,22 @@ class FLOAT_Application_cpt {
 		}
 	}
 
-	static function modify_cpt_menu() {
+	static function modify_cpt_menu(){
 		global $submenu;
 		//removes the 'add new' submenu tab
 		unset( $submenu[ 'edit.php?post_type=' . self::CPT_SLUG ][10] );
 	}
 
+	/*
+	 * if user tries to add new application from admin, redirects to cpt edit screen
+	 */
 	static function redirect_on_add_new_application(){
-//		if ( is_multisite() && ! current_user_can( 'manage_sites' ) || ! is_multisite() && ! current_user_can( 'delete_users' ) ) {
-			$current_screen = get_current_screen();
-			if ( $current_screen->id === 'post-new.php?post_type=' . self::CPT_SLUG  ) {
-//				wp_safe_redirect( home_url() . '/wp-admin/' );
-				die('what whaaaat!');
-			}
+		$current_screen = get_current_screen();
+		if ( $current_screen->id === self::CPT_SLUG && $current_screen->action == 'add' ) {
+			wp_safe_redirect( home_url() . '/wp-admin/' . 'edit.php' . '?post_type=' . self::CPT_SLUG );
 		}
-//	}
+	}
 
-//	}
 
 
 }//end of class FLOAT_Application_cpt
