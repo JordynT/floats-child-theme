@@ -2,12 +2,15 @@
 
 class FLOAT_Application_cpt {
 	public static $cpt_name = 'Application';
-	public static $cpt = 'application';
+//	public static $cpt = 'application';
+	const CPT_SLUG = 'application';
 
 	function __construct() {
 		add_action( 'init', array( get_called_class(), 'create_custom_post_type' ) );
 		add_action( 'save_post', array( get_called_class(), 'save_application_mb_status' ) );
 		add_filter( 'redirect_post_location', array( get_called_class() , 'my_redirect_after_save' ) );
+		add_action( 'admin_menu', array( get_called_class(), 'modify_cpt_menu' ) );
+		add_action( 'current_screen', array( get_called_class(), 'redirect_on_add_new_application' ) );
 	}
 
 	/*
@@ -32,7 +35,7 @@ class FLOAT_Application_cpt {
 			'register_meta_box_cb' => array( get_called_class(), 'create_application_mb' ),
 			'supports'             => array( 'title' ),
 		);
-		register_post_type( static::$cpt_name, $args );//'custom_application'
+		register_post_type( self::CPT_SLUG, $args );//'custom_application'
 
 	}// end of cpt function
 
@@ -121,7 +124,7 @@ class FLOAT_Application_cpt {
 
 	static function my_redirect_after_save( $location ) {
 		global $post;
-		if (self::$cpt == get_post_type( $post->ID ) ) {
+		if (self::CPT_SLUG == get_post_type( $post->ID ) ) {
 
 			$is_accepted = get_post_meta( $post->ID, 'application_status', true );
 			//if applicant is accepted, takes application reviewer to sensei learner management to add user
@@ -153,6 +156,24 @@ class FLOAT_Application_cpt {
 			return $location;
 		}
 	}
+
+	static function modify_cpt_menu() {
+		global $submenu;
+		//removes the 'add new' submenu tab
+		unset( $submenu[ 'edit.php?post_type=' . self::CPT_SLUG ][10] );
+	}
+
+	static function redirect_on_add_new_application(){
+//		if ( is_multisite() && ! current_user_can( 'manage_sites' ) || ! is_multisite() && ! current_user_can( 'delete_users' ) ) {
+			$current_screen = get_current_screen();
+			if ( $current_screen->id === 'post-new.php?post_type=' . self::CPT_SLUG  ) {
+//				wp_safe_redirect( home_url() . '/wp-admin/' );
+				die('what whaaaat!');
+			}
+		}
+//	}
+
+//	}
 
 
 }//end of class FLOAT_Application_cpt
