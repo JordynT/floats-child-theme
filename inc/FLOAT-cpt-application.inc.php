@@ -11,6 +11,8 @@ class FLOAT_Application_cpt {
 		add_action( 'admin_menu', array( get_called_class(), 'modify_cpt_menu' ) );
 		add_action( 'current_screen', array( get_called_class(), 'redirect_on_add_new_application' ) );
 		add_action( 'admin_head', array( get_called_class(), 'hide_add_new_cpt_button' ) );
+		add_filter('manage_posts_columns', array( get_called_class(), 'add_new_column' ) );
+		add_action('manage_posts_custom_column', array( get_called_class(), 'add_new_column_content' ) , 10, 2 );
 	}
 
 	/*
@@ -194,6 +196,24 @@ class FLOAT_Application_cpt {
 			echo '<style type="text/css">
 					.add-new-h2 {display:none;}
 				</style>';
+		}
+	}
+
+	// ADD NEW COLUMN
+	static function add_new_column( $defaults ) {
+		$defaults['application_status'] = 'Application Status';
+		return $defaults;
+	}
+
+// SHOW THE FEATURED IMAGE
+	static function add_new_column_content( $column_name, $post_id ) {
+		if ( $column_name == 'application_status' ) {
+			$status = get_post_meta($post_id, 'application_status' );
+			if( ! empty( $status ) ){
+				echo $status[0];
+			} else {
+				echo "no status has been chosen";
+			}
 		}
 	}
 
