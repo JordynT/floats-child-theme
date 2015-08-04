@@ -167,6 +167,10 @@ class FLOAT_Application_cpt {
 				}
 				//redirects applicant's approver to learner management to add new user to chosen course
 				$location = admin_url( 'admin.php?page=sensei_learners' );
+			} elseif ( ! empty( $is_accepted ) && $is_accepted == 'reject' ) {
+				wp_trash_post( $post->ID  );
+				//TODO: change location of redirect
+				$location = admin_url( '/wp-admin' );
 			}
 
 			return $location;
