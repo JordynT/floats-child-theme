@@ -218,5 +218,4 @@ class FLOAT_Application_cpt {
 	}
 
 
-
 }//end of class FLOAT_Application_cpt
