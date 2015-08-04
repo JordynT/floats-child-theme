@@ -13,7 +13,7 @@ class FLOAT_Functions {
 		if ( class_exists( 'FLOAT_Shortcodes' ) ) {
 			new FLOAT_Shortcodes();
 		}
-		require_once( 'inc/FLOAT-application-taxonomy.inc.php' );
+		require_once( 'inc/FLOAT-taxonomy-application-status.inc.php' );
 		if ( class_exists( 'FLOAT_Application_Taxonomy' ) ) {
 			new FLOAT_Application_Taxonomy();
 		}
