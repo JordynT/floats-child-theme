@@ -42,8 +42,6 @@ class FLOAT_Functions {
 
 	/*
 	 * saves the form data in a serialized array
-	 *
-	 * @TODO add redirect to thank you page
 	 */
 	static function form_to_post() {
 		if ( 'POST' == $_SERVER['REQUEST_METHOD'] && ! empty( $_POST['action'] ) && $_POST['action'] == "new_post" ) {
@@ -79,9 +77,10 @@ class FLOAT_Functions {
 				'work-sample'       => sanitize_text_field( $_POST['sample'] ),
 			);
 			$new_post = array(
-				'post_title'  => sanitize_title( $title ),
-				'post_status' => 'publish',           // Choose: publish, preview, future, draft, etc.
-				'post_type'   => FLOAT_Application_cpt::$cpt_name  //'post',page' or use a custom post type if you want to
+				'post_title'	=> sanitize_title( $title ),
+				'post_status'	=> 'publish',           // Choose: publish, preview, future, draft, etc.
+				'post_type'		=> FLOAT_Application_cpt::$cpt_name,  //'post',page' or use a custom post type if you want to
+				'tax_input' 	=> array ( FLOAT_Application_Taxonomy::TAXONOMY_SLUG => 'New Applications' ),//assigns the post to the new application term
 			);
 			//save the new post
 			$pid = wp_insert_post( $new_post );
