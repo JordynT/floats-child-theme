@@ -17,6 +17,10 @@ class FLOAT_Functions {
 		if ( class_exists( 'FLOAT_Application_Taxonomy' ) ) {
 			new FLOAT_Application_Taxonomy();
 		}
+		require_once( 'admin/class-float-admin.php' );
+		if ( class_exists( 'FLOAT_Admin' ) ) {
+			new FLOAT_Admin();
+		}
 
 		add_action( 'wp_enqueue_scripts', array( get_called_class() ,'theme_enqueue_styles') );
 		add_action( 'template_redirect', array( get_called_class(), 'form_to_post' ) );

@@ -142,6 +142,10 @@ class FLOAT_Application_cpt {
 			//if applicant is accepted, takes application reviewer to sensei learner management to add user
 			//TODO will need to also create user in this function
 			if ( ! empty( $is_accepted ) && $is_accepted == 'accept' ) {
+
+				//call add new term to application function
+				self::add_new_application_term( $post );
+
 				//get application information to create new user
 				$app_info = get_post_meta( $post->ID, 'application_info', true );
 				$user_email = $app_info['email'];
@@ -167,6 +171,17 @@ class FLOAT_Application_cpt {
 
 			return $location;
 		}
+	}
+
+	/*
+	 * on redirect adds that applications term
+	 */
+	static function add_new_application_term( $post ){
+		$has_term = has_term( '', FLOAT_Application_Taxonomy::TAXONOMY_SLUG , $post );
+		if ( $has_term ){
+			wp_remove_object_terms( $post->ID, array( 'Accepted', 'New Applications' ), FLOAT_Application_Taxonomy::TAXONOMY_SLUG );
+		}
+		wp_set_post_terms( $post->ID, 'Accepted', FLOAT_Application_Taxonomy::TAXONOMY_SLUG, false );
 	}
 
 	/*
@@ -199,13 +214,17 @@ class FLOAT_Application_cpt {
 		}
 	}
 
-	// ADD NEW COLUMN
+	/*
+	 *  ADD NEW COLUMN to cpt
+	 */
 	static function add_new_column( $defaults ) {
 		$defaults['application_status'] = 'Application Status';
 		return $defaults;
 	}
 
-// SHOW THE FEATURED IMAGE
+	/*
+	 *
+	 */
 	static function add_new_column_content( $column_name, $post_id ) {
 		if ( $column_name == 'application_status' ) {
 			$status = get_post_meta($post_id, 'application_status' );
