@@ -11,8 +11,8 @@ class FLOAT_Application_cpt {
 		add_action( 'admin_menu', array( get_called_class(), 'modify_cpt_menu' ) );
 		add_action( 'current_screen', array( get_called_class(), 'redirect_on_add_new_application' ) );
 		add_action( 'admin_head', array( get_called_class(), 'hide_add_new_cpt_button' ) );
-		add_filter('manage_posts_columns', array( get_called_class(), 'add_new_column' ) );
-		add_action('manage_posts_custom_column', array( get_called_class(), 'add_new_column_content' ) , 10, 2 );
+		add_filter( 'manage_posts_columns', array( get_called_class(), 'add_new_column' ) );
+		add_action( 'manage_posts_custom_column', array( get_called_class(), 'add_new_column_content' ) , 10, 2 );
 	}
 
 	/*
@@ -47,7 +47,7 @@ class FLOAT_Application_cpt {
 	static function create_application_mb() {
 		//TODO fix these boxes to have application info in content section and appl status on side
 		add_meta_box( 'application_info', 'Application Information', array( get_called_class(), 'application_information_mb' ), self::$cpt_name );
-		add_meta_box('application_status', 'Application Status', array( get_called_class(), 'application_status_mb' ), self::$cpt_name );
+		add_meta_box( 'application_status', 'Application Status', array( get_called_class(), 'application_status_mb' ), self::$cpt_name );
 	}
 
 	/*
@@ -76,7 +76,7 @@ class FLOAT_Application_cpt {
 	 */
 	static function application_status_mb( $post ) {
 		wp_nonce_field( 'float_app_status', 'nonce_app_status' );
-		$is_accepted = get_post_meta($post->ID, 'application_status', true);
+		$is_accepted = get_post_meta( $post->ID, 'application_status', true );
 
 		//if application is rejected, a button is added to send applicant a rejection email
 		if( !empty( $is_accepted  ) && $is_accepted == "reject" ) {
@@ -89,7 +89,7 @@ class FLOAT_Application_cpt {
 			$html .= '<a href="' . wp_mail( 'jordyn.tacoronte@fansided.com', 'The subject', 'sorry, your application is declined' ) . '" class="button reject-button" style="margin-left:10px;" >Send Rejection E-mail</a>';
 			$html .= '</div>';
 
-		} elseif ( !empty( $is_accepted  ) && $is_accepted == "accept" ) {
+		} elseif ( !empty( $is_accepted ) && $is_accepted == "accept" ) {
 
 			$html = '<div><input type="radio" name="application_status" value="accept" checked="checked"><label><strong> Accept</strong></label></div>';
 			$html .= '<div><input type="radio" name="application_status" value="reject" ><label><strong> Reject</strong></label><div>';
@@ -172,7 +172,6 @@ class FLOAT_Application_cpt {
 				//TODO: change location of redirect
 				$location = admin_url( '/wp-admin' );
 			}
-
 			return $location;
 		}
 	}
