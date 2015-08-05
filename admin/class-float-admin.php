@@ -13,7 +13,10 @@ class FLOAT_Admin {
 	 * removes WordPress' original custom taxonomy meta box
 	 */
 	static function remove_custom_meta_boxes() {
+		//removes application status
 		remove_meta_box( 'tagsdiv-' . FLOAT_Application_Taxonomy::TAXONOMY_SLUG , FLOAT_Application_cpt::CPT_SLUG, 'side' );
+		//removes chosen sport
+		remove_meta_box( 'tagsdiv-' . FLOAT_Taxonomy_Chosen_Sport::TAXONOMY_SLUG , FLOAT_Application_cpt::CPT_SLUG, 'side' );
 	}
 
 
