@@ -41,6 +41,9 @@ class FLOAT_Application_Taxonomy {
 	 **/
 	static function all_attached_applications( $term ) {
 		$tax = get_term( $term, self::TAXONOMY_SLUG );
+//		$get_the_terms = get_terms( FLOAT_Taxonomy_Chosen_Sport::TAXONOMY_SLUG );
+//		$the_terms = $get_the_terms[0]->slug;
+//		print_r($the_terms);
 		$slug = $tax->slug;
 		$posts = get_posts( array(
 			'showposts'   => 500,
@@ -58,7 +61,9 @@ class FLOAT_Application_Taxonomy {
 				array(
 					'taxonomy' =>FLOAT_Taxonomy_Chosen_Sport::TAXONOMY_SLUG,
 					'field'    => 'slug',
+//					'terms'    => array( 'fs-mlb', 'fs-extra-local', 'fs-college', 'fs-lifestyle', 'fs-nba', 'fs-nhl', 'fs-nfl', 'fs-soccer' )
 					'terms'    => array( 'fs-mlb', 'fs-extra-local', 'fs-college', 'fs-lifestyle', 'fs-nba', 'fs-nhl', 'fs-nfl', 'fs-soccer' )
+
 				)
 			)
 		) );
