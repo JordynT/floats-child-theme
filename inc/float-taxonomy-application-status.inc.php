@@ -59,7 +59,7 @@ class FLOAT_Application_Taxonomy {
 		?>
 		<tr class="section-header">
 			<th scope="row">
-				<h2>Accepted Applications:</h2>
+				<h4><?php echo $term->name; if ( $term->name == 'Accepted') {?> Applications <?php } ?></h4>
 			</th>
 		</tr>
 		<tr>
