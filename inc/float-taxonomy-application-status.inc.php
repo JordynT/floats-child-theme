@@ -52,9 +52,16 @@ class FLOAT_Application_Taxonomy {
 				array(
 					'taxonomy' => self::TAXONOMY_SLUG,
 					'field'    => 'slug',
-					'terms'    => $slug
+					'terms'    => $slug,
+				),
+				//queries for all of the sport choices in the application
+				array(
+					'taxonomy' =>FLOAT_Taxonomy_Chosen_Sport::TAXONOMY_SLUG,
+					'field'    => 'slug',
+					'terms'    => array( 'fs-mlb', 'fs-extra-local', 'fs-college', 'fs-lifestyle', 'fs-nba', 'fs-nhl', 'fs-nfl', 'fs-soccer' )
 				)
-			) ) );
+			)
+		) );
 		?>
 		<tr class="section-header">
 			<th scope="row">
@@ -71,6 +78,26 @@ class FLOAT_Application_Taxonomy {
 			<?php
 
 			foreach ( $posts as $post ) if ( ! empty( $post ) ) {
+				//separates the applications by their chosen site
+				$terms = wp_get_post_terms( $post->ID, FLOAT_Taxonomy_Chosen_Sport::TAXONOMY_SLUG  );
+				$term = $terms[0];
+				if( $term->slug == 'fs-mlb' ){
+					echo '<tr><th>MLB</th></tr>';
+				} elseif ( $term->slug == 'fs-nba' ){
+					echo '<tr><th>NBA</th></tr>';
+				} elseif ( $term->slug == 'fs-nfl' ){
+					echo '<tr><th>NFL</th></tr>';
+				} elseif ( $term->slug == 'fs-nhl' ){
+					echo '<tr><th>NHL</th></tr>';
+				} elseif ( $term->slug == 'fs-soccer' ){
+					echo '<tr><th>Soccer</th></tr>';
+				} elseif ( $term->slug == 'fs-college' ){
+					echo '<tr><th>College</th></tr>';
+				} elseif ( $term->slug == 'fs-extra-local' ){
+					echo '<tr><th>Extra/Local</th></tr>';
+				} elseif ( $term->slug == 'fs-lifestyle' ){
+					echo '<tr><th>Lifestyle</th></tr>';
+				}
 				$url = get_edit_post_link( $post->ID );
 				$position = $post->menu_order;
 				$post_title = $post->post_title;
