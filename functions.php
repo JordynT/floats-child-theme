@@ -17,10 +17,15 @@ class FLOAT_Functions {
 		if ( class_exists( 'FLOAT_Application_Taxonomy' ) ) {
 			new FLOAT_Application_Taxonomy();
 		}
+		require_once( 'inc/float-taxonomy-chosen-sport.inc.php' );
+		if ( class_exists( 'FLOAT_Taxonomy_Chosen_Sport' ) ) {
+			new FLOAT_Taxonomy_Chosen_Sport();
+		}
 		require_once( 'admin/class-float-admin.php' );
 		if ( class_exists( 'FLOAT_Admin' ) ) {
 			new FLOAT_Admin();
 		}
+
 
 		add_action( 'wp_enqueue_scripts', array( get_called_class() ,'theme_enqueue_styles') );
 		add_action( 'template_redirect', array( get_called_class(), 'form_to_post' ) );
@@ -54,6 +59,7 @@ class FLOAT_Functions {
 			if ( isset ( $_POST['first_name'] ) ) {
 				$title .= $_POST['first_name'];
 			}
+			//store application into an array
 			$application = array(
 				'first-name'        => sanitize_text_field( $_POST['first_name'] ),
 				'last-name'         => sanitize_text_field( $_POST['last_name'] ),
@@ -76,11 +82,31 @@ class FLOAT_Functions {
 				'qualities'         => sanitize_text_field( $_POST['qualities'] ),
 				'work-sample'       => sanitize_text_field( $_POST['sample'] ),
 			);
+			//checks which site applicant applied for
+			if( $_POST['site_applying_for'] == 'nfl' ){
+				$site = 'NFL';
+			} elseif ( $_POST['site_applying_for'] == 'nhl' ){
+				$site = 'NHL';
+			} elseif ( $_POST['site_applying_for'] == 'mlb' ){
+				$site = 'MLB';
+			} elseif ( $_POST['site_applying_for'] == 'nba' ) {
+				$site = 'NBA';
+			} elseif ( $_POST['site_applying_for'] == 'soccer' ){
+				$site = 'Soccer';
+			} elseif ( $_POST['site_applying_for'] == 'college' ){
+				$site = 'FS College';
+			} elseif ( $_POST['site_applying_for'] == 'local' ){
+				$site = 'Extra/Local';
+			} elseif ( $_POST['site_applying_for'] == 'lifestyle' ) {
+				$site = 'Lifestyle';
+			}
+
+			//create a new post upon submission of the application
 			$new_post = array(
 				'post_title'	=> sanitize_title( $title ),
 				'post_status'	=> 'publish',           // Choose: publish, preview, future, draft, etc.
 				'post_type'		=> FLOAT_Application_cpt::$cpt_name,  //'post',page' or use a custom post type if you want to
-				'tax_input' 	=> array ( FLOAT_Application_Taxonomy::TAXONOMY_SLUG => 'New Applications' ),//assigns the post to the new application term
+				'tax_input' 	=> array ( FLOAT_Application_Taxonomy::TAXONOMY_SLUG => 'New Applications', FLOAT_Taxonomy_Chosen_Sport::TAXONOMY_SLUG => $site ),//assigns the post to the new application term
 			);
 			//save the new post
 			$pid = wp_insert_post( $new_post );

@@ -6,9 +6,8 @@ class FLOAT_Application_Taxonomy {
 		add_action( 'init', array( get_called_class(), 'create_application_status_custom_tax' ) );
 		add_action( 'admin_init', array( get_called_class(), 'insert_application_status_terms' ) );
 		add_action( self::TAXONOMY_SLUG . '_edit_form_fields', array( get_called_class(), 'all_attached_applications' ) );
-
-
 	}
+
 	static function create_application_status_custom_tax() {
 		register_taxonomy(
 			self::TAXONOMY_SLUG,
